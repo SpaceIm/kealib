@@ -1,4 +1,5 @@
 
+include(GenerateExportHeader)
 ###############################################################################
 # set file locations
 set(LIBKEA_SRC_DIR libkea)
@@ -29,7 +30,10 @@ source_group("include_kea" FILES ${LIBKEA_H})
 
 ###############################################################################
 # Build, link and install library
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 add_library(${LIBKEA_LIB_NAME} ${LIBKEA_CPP} ${LIBKEA_H} )
+generate_export_header(${LIBKEA_LIB_NAME} EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/../include/${LIBKEA_LIB_NAME}_export.h)
 target_link_libraries(${LIBKEA_LIB_NAME} ${HDF5_LIBRARIES} ${HDF5_HL_LIBRARIES})
 
 if(BUILD_SHARED_LIBS)
@@ -76,5 +80,6 @@ install (TARGETS ${LIBKEA_LIB_NAME}
           RUNTIME DESTINATION bin
           LIBRARY DESTINATION lib
           ARCHIVE DESTINATION lib)
-install (FILES ${LIBKEA_H} DESTINATION include/libkea)
+install (FILES ${LIBKEA_H} ${CMAKE_CURRENT_BINARY_DIR}/../include/${LIBKEA_LIB_NAME}_export.h 
+          DESTINATION include/libkea)
 ###############################################################################
